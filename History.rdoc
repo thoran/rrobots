@@ -1,0 +1,66 @@
+=== 1.0.0 / 2014-05-20
+
+* 1 major enhancement
+
+  * Birthday!
+
+=== 0.0.1 / 2011-11-24
+
+* 1 major enhancement
+
+  * Released as a gem!
+
+=== 0.4.0 / 2005-12-15
+
+* 2 minor enhancements
+
+  * Run hundreds of battles and generate nice html tables showing every aspect of the outcome.
+  * Create team robots, and wreak havoc on your uncoordinated enemies.
+
+=== 0.2.2 / 2005-12-08
+
+* 1 minor enhancement
+
+  * Unknown changes released.
+
+=== 0.2.1 / 2005-12-01
+
+* 1 minor enhancement
+
+  * Unknown changes released.
+
+=== 0.2.0 / 2005-11-27
+
+* 2 minor enhancements
+
+  * A lot of Bugfixes and implementing slugfests of up to 8 robots
+  * The robot interface didn't change so all your creations should still work.
+
+=== 0.1.3 / 2005-11-25
+
+* 1 minor enhancement
+
+  * Unknown changes released.
+
+=== 0.1.2 / 2005-11-25
+
+* 2 minor enhancements
+
+  * Simple OSD for robot health (thanks to Terje Tjervaag)
+  * Alpha dithered explosions (thanks to Jannis Harder)
+
+* 1 bug fix:
+
+  * Bugfixes
+
+=== 0.1.1 / 2005-11-24
+
+* 1 bug fix:
+
+  * Uh, oh, sorry to my linux friends, i should have used '/' instead of '\' right from the start.
+
+=== 0.1.0 / 2005-11-24
+
+* 1 minor enhancement
+
+  * Birthday!

@@ -1,29 +1,15 @@
-require 'rubygems'
-require 'rake'
+require "rubygems"
+require "hoe"
 
-begin
-  require 'jeweler'
-  Jeweler::Tasks.new do |gem|
-    gem.name = "rrobots"
-    gem.summary = "gemified version of rrobots"
-    gem.description = "gemified version of rrobots"
-    gem.email = "jasonedwardjones@gmail.com"
-    gem.homepage = "http://github.com/ralreegorganon/rrobots"
-    gem.authors = ["Jason Jones"]
-    gem.executables = ["rrobots", "tournament"]
-    gem.add_dependency "gosu"
-  end
-  Jeweler::GemcutterTasks.new
-rescue LoadError
-  puts "Jeweler (or a dependency) not available. Install it with: gem install jeweler"
-end
+# Hoe.plugin :isolate
+Hoe.plugin :seattlerb
+Hoe.plugin :rdoc
 
-require 'rake/rdoctask'
-Rake::RDocTask.new do |rdoc|
-  version = File.exist?('VERSION') ? File.read('VERSION') : ""
+Hoe.spec "rrobots" do
+  developer "Jason Jones", "jasonedwardjones@gmail.com"
+  developer "Ryan Davis", "ryand-ruby@zenspider.com"
 
-  rdoc.rdoc_dir = 'rdoc'
-  rdoc.title = "rrobots #{version}"
-  rdoc.rdoc_files.include('README*')
-  rdoc.rdoc_files.include('lib/**/*.rb')
+  license "ruby"
+
+  dependency "gosu", "~> 0.7"
 end

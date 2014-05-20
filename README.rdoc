@@ -1,10 +1,30 @@
 = RRobots
 
+home :: https://github.com/zenspider/rrobots
+rdoc :: http://docs.seattlerb.org/rrobots
+
+== DESCRIPTION:
+
 RRobots is a simulation environment for robots, these robots have a scanner
 and a gun, can move forward and backwards and are entirely controlled by
 ruby scripts.
 
-== Example script
+All you need to implement is the tick method which should accept a
+hash of events that occurred during the last tick.
+
+See Robot for full documentation of the methods and accessors
+available to your AI during the game.
+
+RRobots is implemented in pure ruby using a Gosu ui and should run on
+all platforms that have ruby and Gosu.
+
+== FEATURES/PROBLEMS:
+
+* FIX (list of features or problems)
+
+== SYNOPSIS:
+
+=== Code:
 
   require 'rrobots'
 
@@ -20,15 +40,7 @@ ruby scripts.
     end
   end
 
-All you need to implement is the tick method which should accept a hash of events that occurred during the last tick.
-
-See Robot for full documentation of the methods and accessors
-available to your AI during the game.
-
-RRobots is implemented in pure ruby using a Gosu ui and should run on all
-platforms that have ruby and Gosu.
-
-== Usage
+=== Command-Line Usage
 
 To start a match call:
 
@@ -53,3 +65,19 @@ The names of the rb files have to match the class names of the robots.
 
 Each robot is matched against each other 1on1. The results are available
 as yaml or html files.
+
+== REQUIREMENTS:
+
+* gosu
+
+== INSTALL:
+
+* sudo gem install rrobots
+
+== LICENSE:
+
+https://www.ruby-lang.org/en/about/license.txt
+
+(The Ruby License)
+
+Copyright (c) Ryan Davis, seattle.rb; Jason Jones; Simon Kröger; others?
