@@ -13,7 +13,8 @@
 # single tick (100 degrees if you turn your body, gun and radar in the
 # same direction) but will report only the distance of scanned robots,
 # not the angle. If you want more precision you have to turn your
-# radar slower.
+# radar slower. Finally, to be precise, firing happens first, then
+# turning, then moving, then scanning.
 #
 # You must implement Robot#tick for your AI to respond to the game.
 
