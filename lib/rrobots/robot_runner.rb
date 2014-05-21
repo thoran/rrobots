@@ -18,6 +18,9 @@ class RobotRunner
   #AI of this robot
   attr_accessor :robot
 
+  #team of this robot
+  attr_accessor :team
+
   #keeps track of total damage done by this robot
   attr_accessor :damage_given
 
