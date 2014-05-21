@@ -1,19 +1,25 @@
 # :stopdoc:
 class Leaderboard
   def initialize(window, robots)
-    @font_size = 24
-    @robots = robots
-    @font = Gosu::Font.new(window, 'Courier New', @font_size)
-    @x_offset = @font_size
-    @y_offset = @font_size * 2
+    @font_size = RRobotsGameWindow::FONT_SIZE
+    @robots    = robots
+    @font      = Gosu::Font.new(window, RRobotsGameWindow::BIG_FONT, @font_size)
+    @x_offset  = @font_size
+    @y_offset  = @font_size * 2
   end
 
   def draw
-    if @robots
-      @robots.sort_by { |r| -r.first.energy }.each_with_index do |r, i|
+    if @robots # FIX: this should be populated when handed to us
+      @max_size ||= @robots.keys.map { |r| r.name.length }.max
+
+      @robots.sort_by { |(r,_)| -r.energy }.each_with_index do |(runner, ai), i|
+        x = @x_offset
         y = @y_offset + i * @font_size
-        @font.draw("#{r.first.name}", @x_offset, y, ZOrder::UI, 1.0, 1.0, r.last.font_color)
-        @font.draw("#{r.first.energy.to_i}", @x_offset + (@font_size * 6), y, ZOrder::UI, 1.0, 1.0, r.last.font_color)
+        c = ai.font_color
+
+        text = "%-#{@max_size}s   %3d" % [runner.name, runner.energy]
+
+        @font.draw(text, x, y, ZOrder::UI, 1.0, 1.0, c)
       end
     end
   end

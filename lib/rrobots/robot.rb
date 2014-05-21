@@ -20,11 +20,7 @@
 
 module Robot
   def self.attr_state(*names) # :nodoc:
-    names.each{|n|
-      n = n.to_sym
-      attr_writer n
-      attr_reader n
-    }
+    attr_accessor(*names)
   end
 
   def self.attr_action(*names) # :nodoc:
