@@ -32,7 +32,7 @@ module Robot
 
   def self.attr_event(*names) # :nodoc:
     names.each{|n|
-      n = n.to_sym
+      n = n.to_s
       define_method(n){ @events[n] }
     }
   end
