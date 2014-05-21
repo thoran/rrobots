@@ -7,6 +7,9 @@ class Bullet
   attr_accessor :energy
   attr_accessor :dead
   attr_accessor :origin
+  attr_reader :battlefield
+
+  alias dead? dead
 
   def initialize bf, x, y, heading, speed, energy, origin
     @x, @y, @heading, @origin = x, y, heading, origin
@@ -19,21 +22,25 @@ class Bullet
   end
 
   def tick
-    return if @dead
-    @x += Math::cos(@heading.to_rad) * @speed
-    @y -= Math::sin(@heading.to_rad) * @speed
+    return if dead?
 
-    @dead ||= (@x < 0) || (@x >= @battlefield.width)
-    @dead ||= (@y < 0) || (@y >= @battlefield.height)
+    self.x += Math::cos(heading.to_rad) * speed
+    self.y -= Math::sin(heading.to_rad) * speed
 
-    @battlefield.robots.each do |other|
-      if (other != origin) && (Math.hypot(@y - other.y, other.x - @x) < 40) && (!other.dead)
-        explosion = Explosion.new(@battlefield, other.x, other.y)
-        @battlefield << explosion
+    self.dead ||= (x < 0) || (x >= battlefield.width)
+    self.dead ||= (y < 0) || (y >= battlefield.height)
+
+    battlefield.robots.each do |other|
+      distance = Math.hypot(y - other.y, other.x - x)
+
+      if other != origin && distance < 40 && !other.dead?
+        battlefield << Explosion.new(battlefield, other.x, other.y)
+
         damage = other.hit(self)
         origin.damage_given += damage
-        origin.kills += 1 if other.dead
-        @dead = true
+        origin.kills += 1 if other.dead?
+
+        self.dead = true
       end
     end
   end

@@ -5,6 +5,8 @@ class Explosion
   attr_accessor :t
   attr_accessor :dead
 
+  alias dead? dead
+
   def initialize bf, x, y
     @x, @y, @t = x, y, 0
     @battlefield, @dead = bf, false

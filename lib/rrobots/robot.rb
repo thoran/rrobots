@@ -24,17 +24,21 @@ module Robot
   end
 
   def self.attr_action(*names) # :nodoc:
-    names.each{|n|
+    names.each do |n|
       n = n.to_sym
-      define_method(n){|param| @actions[n] = param }
-    }
+      define_method(n) do |param|
+        @actions[n] = param
+      end
+    end
   end
 
   def self.attr_event(*names) # :nodoc:
-    names.each{|n|
+    names.each do |n|
       n = n.to_s
-      define_method(n){ @events[n] }
-    }
+      define_method(n) do
+        @events[n]
+      end
+    end
   end
 
   ##

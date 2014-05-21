@@ -1,37 +1,41 @@
 # :stopdoc:
 class RobotRunner
-
-  STATE_IVARS = [ :x, :y, :gun_heat, :heading, :gun_heading, :radar_heading, :time, :size, :speed, :energy, :team ]
+  STATE_IVARS = [:x, :y, :gun_heat, :heading, :gun_heading, :radar_heading,
+                 :time, :size, :speed, :energy, :team ]
   NUMERIC_ACTIONS = [ :fire, :turn, :turn_gun, :turn_radar, :accelerate ]
   STRING_ACTIONS = [ :say, :broadcast ]
 
-  STATE_IVARS.each{|iv|
+  STATE_IVARS.each do |iv|
     attr_accessor iv
-  }
-  NUMERIC_ACTIONS.each{|iv|
-    attr_accessor "#{iv}_min", "#{iv}_max"
-  }
-  STRING_ACTIONS.each{|iv|
-    attr_accessor "#{iv}_max"
-  }
+  end
 
-  #AI of this robot
+  NUMERIC_ACTIONS.each do |iv|
+    attr_accessor "#{iv}_min", "#{iv}_max"
+  end
+
+  STRING_ACTIONS.each do |iv|
+    attr_accessor "#{iv}_max"
+  end
+
+  # AI of this robot
   attr_accessor :robot
 
-  #keeps track of total damage done by this robot
+  # keeps track of total damage done by this robot
   attr_accessor :damage_given
 
-  #keeps track of the kills
+  # keeps track of the kills
   attr_accessor :kills
 
   attr_reader :actions, :speech
 
   def initialize robot, bf, team=0
-    @robot = robot
+    @robot       = robot
     @battlefield = bf
-    @team = team
+    @team        = team
+
     set_action_limits
     set_initial_state
+
     @events = Hash.new{|h, k| h[k]=[]}
     @actions = Hash.new(0)
   end
@@ -40,17 +44,30 @@ class RobotRunner
     @robot.skin_prefix
   end
 
+  def set_action_limits
+    @fire_min, @fire_max             =   0,  3
+    @turn_min, @turn_max             = -10, 10
+    @turn_gun_min, @turn_gun_max     = -30, 30
+    @turn_radar_min, @turn_radar_max = -60, 60
+    @accelerate_min, @accelerate_max =  -1,  1
+    @speed_min, @speed_max           =  -8,  8
+
+    @say_max       = 256
+    @broadcast_max = 16
+  end
+
   def set_initial_state
-    @x = 0
-    @y = 0
+    @x              = 0
+    @y              = 0
     @speech_counter = -1
-    @speech = nil
-    @time = 0
-    @size = 60
-    @speed = 0
-    @energy = 100
-    @damage_given = 0
-    @kills = 0
+    @speech         = nil
+    @time           = 0
+    @size           = 60
+    @speed          = 0
+    @energy         = 100
+    @damage_given   = 0
+    @kills          = 0
+
     teleport
   end
 
@@ -64,17 +81,6 @@ class RobotRunner
     @radar_heading = @heading
   end
 
-  def set_action_limits
-    @fire_min, @fire_max = 0, 3
-    @turn_min, @turn_max = -10, 10
-    @turn_gun_min, @turn_gun_max = -30, 30
-    @turn_radar_min, @turn_radar_max = -60, 60
-    @accelerate_min, @accelerate_max = -1, 1
-    @speed_min, @speed_max = -8, 8
-    @say_max = 256
-    @broadcast_max = 16
-  end
-
   def hit bullet
     damage = bullet.energy
     @energy -= damage
@@ -86,15 +92,11 @@ class RobotRunner
     @energy < 0
   end
 
-  def clamp(var, min, max)
-    val = 0 + var # to guard against poisoned vars
-    if val > max
-      max
-    elsif val < min
-      min
-    else
-      val
-    end
+  alias dead? dead
+
+  def clamp var, min, max
+    val = 0 + (var || 0)
+    val > max ? max : val < min ? min : val
   end
 
   def internal_tick
@@ -125,21 +127,26 @@ class RobotRunner
 
   def state
     current_state = {}
-    STATE_IVARS.each{|iv|
+
+    STATE_IVARS.each do |iv|
       current_state[iv] = send(iv)
-    }
-    current_state[:battlefield_width] = @battlefield.width
+    end
+
+    current_state[:battlefield_width]  = @battlefield.width
     current_state[:battlefield_height] = @battlefield.height
-    current_state[:game_over] = @battlefield.game_over
+    current_state[:game_over]          = @battlefield.game_over
+
     current_state
   end
 
   def update_state
     new_state = state
     @robot.state = new_state
-    new_state.each{|k,v|
+
+    new_state.each do |k,v|
       @robot.send("#{k}=", v)
-    }
+    end
+
     @robot.events = @events.dup
     @robot.actions ||= Hash.new(0)
     @robot.actions.clear
@@ -151,25 +158,34 @@ class RobotRunner
   end
 
   def fire
-    if (@actions[:fire] > 0) && (@gun_heat == 0)
-      bullet = Bullet.new(@battlefield, @x, @y, @gun_heading, 30, @actions[:fire]*3.0, self)
-      3.times{bullet.tick}
+    if @actions[:fire] > 0 && @gun_heat == 0
+      bullet = Bullet.new(@battlefield, @x, @y,
+                          @gun_heading,
+                          30, # FIX: should be proportional to energy
+                          @actions[:fire]*3.0,
+                          self)
+
       @battlefield << bullet
+
       @gun_heat = @actions[:fire]
     end
+
     @gun_heat -= 0.1
     @gun_heat = 0 if @gun_heat < 0
   end
 
   def turn
     @old_radar_heading = @radar_heading
-    @heading += @actions[:turn]
-    @gun_heading += (@actions[:turn] + @actions[:turn_gun])
+
+    # TODO: remove this cascade
+    @heading       += (@actions[:turn])
+    @gun_heading   += (@actions[:turn] + @actions[:turn_gun])
     @radar_heading += (@actions[:turn] + @actions[:turn_gun] + @actions[:turn_radar])
+
     @new_radar_heading = @radar_heading
 
-    @heading %= 360
-    @gun_heading %= 360
+    @heading       %= 360
+    @gun_heading   %= 360
     @radar_heading %= 360
   end
 

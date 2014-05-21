@@ -73,6 +73,7 @@ class RRobotsGameWindow < Gosu::Window
     ticks.times do
       if @battlefield.game_over
         @on_game_over_handlers.each{|h| h.call(@battlefield) }
+
         winner = @robots.keys.first
         whohaswon = if winner.nil?
                       "Draw!"
