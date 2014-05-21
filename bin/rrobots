@@ -78,6 +78,7 @@ def run_in_gui(battlefield, xres, yres, framerate)
   update_interval = 1000 / framerate
 
   arena = RRobotsGameWindow.new(battlefield, xres, yres, update_interval)
+  $arena = arena if $RDEBUG
   game_over_counter = battlefield.teams.all?{|k,t| t.size < 2} ? 250 : 500
   outcome_printed = false
 
@@ -129,7 +130,7 @@ end
 
 def setup_battlefield(options, robots)
   teams = Array.new([options.teams, robots.size].min){ [] }
-  battlefield = Battlefield.new options.resolution[0]*2, options.resolution[1]*2, options.timeout, options.match
+  battlefield = Battlefield.new options.resolution[0], options.resolution[1], options.timeout, options.match
 
   c = 0
   team_divider = (robots.size / teams.size.to_f).ceil

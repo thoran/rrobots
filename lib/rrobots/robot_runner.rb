@@ -44,8 +44,8 @@ class RobotRunner
   end
 
   def set_initial_state
-    @x = @battlefield.width / 2
-    @y = @battlefield.height / 2
+    @x = 0
+    @y = 0
     @speech_counter = -1
     @speech = nil
     @time = 0
@@ -57,12 +57,13 @@ class RobotRunner
     teleport
   end
 
-  def teleport(distance_x=@battlefield.width / 2, distance_y=@battlefield.height / 2)
-    @x += ((rand-0.5) * 2 * distance_x).to_i
-    @y += ((rand-0.5) * 2 * distance_y).to_i
-    @gun_heat = 3
-    @heading = (rand * 360).to_i
-    @gun_heading = @heading
+  def teleport
+    @x += (rand * @battlefield.width).to_i
+    @y += (rand * @battlefield.height).to_i
+
+    @gun_heat      = 3
+    @heading       = (rand * 360).to_i
+    @gun_heading   = @heading
     @radar_heading = @heading
   end
 
@@ -73,7 +74,6 @@ class RobotRunner
     @turn_radar_min, @turn_radar_max = -60, 60
     @accelerate_min, @accelerate_max = -1, 1
     @speed_min, @speed_max = -8, 8
-    @teleport_min, @teleport_max = 0, 100
     @say_max = 256
     @broadcast_max = 16
   end

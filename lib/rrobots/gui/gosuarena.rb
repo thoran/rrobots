@@ -75,7 +75,8 @@ class RRobotsGameWindow < Gosu::Window
                     else
                       "Team #{winner.team} won!"
                     end
-        @font.draw_rel("#{whohaswon}", xres/2, yres/2, ZOrder::UI, 0.5, 0.5, 1, 1, 0xffffff00)
+        @font.draw_rel("#{whohaswon}", xres/2, yres/2, ZOrder::UI,
+                       0.5, 0.5, 1, 1, 0xffffff00)
       end
       @battlefield.tick
     end
@@ -96,27 +97,27 @@ class RRobotsGameWindow < Gosu::Window
                                     col,
                                     font_col
                                    )
-      @robots[ai].body.draw_rot(ai.x / 2, ai.y / 2, ZOrder::Robot, (-(ai.heading-90)) % 360)
-      @robots[ai].gun.draw_rot(ai.x / 2, ai.y / 2, ZOrder::Robot, (-(ai.gun_heading-90)) % 360)
-      @robots[ai].radar.draw_rot(ai.x / 2, ai.y / 2, ZOrder::Robot, (-(ai.radar_heading-90)) % 360)
+      @robots[ai].body.draw_rot(ai.x, ai.y, ZOrder::Robot, (-(ai.heading-90)) % 360)
+      @robots[ai].gun.draw_rot(ai.x, ai.y, ZOrder::Robot, (-(ai.gun_heading-90)) % 360)
+      @robots[ai].radar.draw_rot(ai.x, ai.y, ZOrder::Robot, (-(ai.radar_heading-90)) % 360)
 
-      @robots[ai].speech.draw_rel(ai.speech.to_s, ai.x / 2, ai.y / 2 - 40, ZOrder::UI, 0.5, 0.5, 1, 1, font_col)
-      @robots[ai].info.draw_rel("#{ai.name}", ai.x / 2, ai.y / 2 + 30, ZOrder::UI, 0.5, 0.5, 1, 1, font_col)
-      @robots[ai].info.draw_rel("#{ai.energy.to_i}", ai.x / 2, ai.y / 2 + 50, ZOrder::UI, 0.5, 0.5, 1, 1, font_col)
+      @robots[ai].speech.draw_rel(ai.speech.to_s, ai.x, ai.y - 40, ZOrder::UI, 0.5, 0.5, 1, 1, font_col)
+      @robots[ai].info.draw_rel("#{ai.name}", ai.x, ai.y + 30, ZOrder::UI, 0.5, 0.5, 1, 1, font_col)
+      @robots[ai].info.draw_rel("#{ai.energy.to_i}", ai.x, ai.y + 50, ZOrder::UI, 0.5, 0.5, 1, 1, font_col)
     end
   end
 
   def draw_bullets
     @battlefield.bullets.each do |bullet|
       @bullets[bullet] ||= @bullet_image
-      @bullets[bullet].draw(bullet.x / 2, bullet.y / 2, ZOrder::Explosions)
+      @bullets[bullet].draw(bullet.x, bullet.y, ZOrder::Explosions)
     end
   end
 
   def draw_explosions
     @battlefield.explosions.each do |explosion|
       @explosions[explosion] = boom[explosion.t % 14]
-      @explosions[explosion].draw_rot(explosion.x / 2, explosion.y / 2, ZOrder::Explosions, 0)
+      @explosions[explosion].draw_rot(explosion.x, explosion.y, ZOrder::Explosions, 0)
     end
   end
 end
