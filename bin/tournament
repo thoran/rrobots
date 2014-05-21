@@ -245,7 +245,16 @@ robots.each do |bot1|
       results_string = sub.read
       sub.close
 
-      match_data = YAML.load(results_string)
+      match_data = YAML.load(results_string) rescue nil
+
+      unless match_data then
+        puts "Bad YAML from match:"
+        puts
+        puts results_string
+        puts
+        abort "aborting"
+      end
+
       match_data['match'] = i
       match_data['round'] = round_number
       match_data['timedout'] = 1 if options.timeout <= match_data['elapsed_ticks']
