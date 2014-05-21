@@ -32,12 +32,11 @@ class RobotRunner
     @robot       = robot
     @battlefield = bf
     @team        = team
+    @events      = Hash.new { |h, k| h[k]=[] }
+    @actions     = {}
 
     set_action_limits
     set_initial_state
-
-    @events = Hash.new{|h, k| h[k]=[]}
-    @actions = Hash.new(0)
   end
 
   def skin_prefix
@@ -114,14 +113,20 @@ class RobotRunner
 
   def parse_actions
     @actions.clear
-    NUMERIC_ACTIONS.each{|an|
-      @actions[an] = clamp(@robot.actions[an], send("#{an}_min"), send("#{an}_max"))
-    }
-    STRING_ACTIONS.each{|an|
-      if @robot.actions[an] != 0
-        @actions[an] = String(@robot.actions[an])[0, send("#{an}_max")]
+
+    NUMERIC_ACTIONS.each do |action|
+      min = send "#{action}_min"
+      max = send "#{action}_max"
+      @actions[action] = clamp @robot.actions[action], min, max
+    end
+
+    STRING_ACTIONS.each do |action|
+      if @robot.actions[action]
+        max = send "#{action}_max"
+        @actions[action] = String(@robot.actions[action])[0, max]
       end
-    }
+    end
+
     @actions
   end
 
@@ -148,7 +153,7 @@ class RobotRunner
     end
 
     @robot.events = @events.dup
-    @robot.actions ||= Hash.new(0)
+    @robot.actions ||= {}
     @robot.actions.clear
   end
 
@@ -211,14 +216,15 @@ class RobotRunner
             (@old_radar_heading >= a+360 && a+360 >= @new_radar_heading) ||
             (@old_radar_heading <= a-360 && a-360 <= @new_radar_heading) ||
             (@old_radar_heading >= a-360 && a-360 >= @new_radar_heading))
-          @events['robot_scanned'] << [Math.hypot(@y - other.y, other.x - @x)]
+          distance = Math.hypot(@y - other.y, other.x - @x)
+          @events['robot_scanned'] << [distance, a]
         end
       end
     end
   end
 
   def speak
-    if @actions[:say] != 0
+    if @actions[:say]
       @speech = @actions[:say]
       @speech_counter = 50
     elsif @speech and (@speech_counter -= 1) < 0
@@ -230,7 +236,7 @@ class RobotRunner
     @battlefield.robots.each do |other|
       if (other != self) && (!other.dead)
         msg = other.actions[:broadcast]
-        if msg != 0
+        if msg
           a = Math.atan2(@y - other.y, other.x - @x) / Math::PI * 180 % 360
           dir = 'east'
           dir = 'north' if a.between? 45,135
