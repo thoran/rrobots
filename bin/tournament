@@ -237,13 +237,14 @@ robots.each do |bot1|
     i = 1
     matches = []
     options.matches.times do |i|
-      puts "- Match #{i+1} of #{options.matches} -"
-      cmd = "rrobots --no-gui --timeout #{options.timeout} #{options.directory}/#{bot1} #{options.directory}/#{bot2}"
+      puts "  - Match #{i+1} of #{options.matches}"
+      t, d = options.timeout, options.directory
 
-      # using popen instead of `cmd` lets us see the progress dots (......) output as the match progresses.
-      sub = IO.popen(cmd)
-      results_string = sub.read
-      sub.close
+      dir = File.dirname __FILE__
+
+      cmd = "ruby -I#{dir}/../lib #{dir}/rrobots --no-gui --timeout #{t} #{d}/#{bot1} #{d}/#{bot2}"
+
+      results_string = `#{cmd} 2>/dev/null`
 
       match_data = YAML.load(results_string) rescue nil
 
@@ -261,8 +262,7 @@ robots.each do |bot1|
       @all_match_data << match_data
 
       match = Match.new(match_data)
-      puts
-      puts match.one_line_summary
+      puts "    #{match.one_line_summary}"
       matches << match
     end
     rounds << Round.new(matches)
