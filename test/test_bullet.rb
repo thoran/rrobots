@@ -4,12 +4,16 @@ require "rrobots/battlefield"
 require "rrobots/robot_runner"
 
 class TestBullet < Minitest::Test
-  def test_tick
-    bf = Battlefield.new 1000, 1000, 1000, 0
+  attr_accessor :b, :bf
+
+  def setup
+    self.bf = Battlefield.new 1000, 1000, 1000, 0
     bot = :bot
 
-    b = Bullet.new bf, 0, 0, 0, 100, 10, bot
+    self.b = Bullet.new bf, 0, 0, 0, 100, 10, bot
+  end
 
+  def test_tick
     b.tick
 
     assert_equal 100, b.x
@@ -20,11 +24,6 @@ class TestBullet < Minitest::Test
   end
 
   def test_tick_dead_boundaries
-    bf = Battlefield.new 1000, 1000, 1000, 0
-    bot = :bot
-
-    b = Bullet.new bf, 0, 0, 0, 100, 10, bot
-
     10.times do
       b.tick
     end
@@ -37,8 +36,6 @@ class TestBullet < Minitest::Test
   end
 
   def test_tick_dead_hit
-    bf = Battlefield.new 1000, 1000, 1000, 0
-
     bot = RobotRunner.new nil, bf
     bot.x = 0
     bot.y = 0
@@ -51,7 +48,7 @@ class TestBullet < Minitest::Test
 
     bf << enemy
 
-    b = Bullet.new bf, 0, 0, 0, 100, 10, bot
+    b.origin = bot
 
     b.tick
 
