@@ -1,31 +1,32 @@
+require "rrobots/numeric"
+require "rrobots/explosion"
+
 # :stopdoc:
 class Bullet
+  attr_accessor :dead
+  attr_accessor :energy
+  attr_accessor :heading
+  attr_accessor :origin
+  attr_accessor :speed
   attr_accessor :x
   attr_accessor :y
-  attr_accessor :heading
-  attr_accessor :speed
-  attr_accessor :energy
-  attr_accessor :dead
-  attr_accessor :origin
+
   attr_reader :battlefield
 
   alias dead? dead
 
   def initialize bf, x, y, heading, speed, energy, origin
-    @x, @y, @heading, @origin = x, y, heading, origin
-    @speed, @energy = speed, energy
-    @battlefield, @dead = bf, false
-  end
+    @battlefield, @x, @y = bf, x, y
+    @heading, @speed, @energy, @origin = heading, speed, energy, origin
 
-  def state
-    {:x=>x, :y=>y, :energy=>energy}
+    @dead = false
   end
 
   def tick
     return if dead?
 
     self.x += Math::cos(heading.to_rad) * speed
-    self.y -= Math::sin(heading.to_rad) * speed
+    self.y -= Math::sin(heading.to_rad) * speed # minus because y goes down
 
     self.dead ||= (x < 0) || (x >= battlefield.width)
     self.dead ||= (y < 0) || (y >= battlefield.height)
