@@ -1,4 +1,4 @@
-require "minitest/autorun"
+require_relative 'test_helper'
 require "rrobots/explosion"
 
 class TestExplosion < Minitest::Test

@@ -1,4 +1,4 @@
-require "minitest/autorun"
+require_relative 'test_helper'
 require "rrobots/bullet"
 require "rrobots/battlefield"
 require "rrobots/robot_runner"

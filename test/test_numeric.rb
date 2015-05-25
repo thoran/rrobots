@@ -2,7 +2,7 @@
 #                 classname: asrt / meth =  ratio%
 #                   Numeric:    0 /    2 =   0.00%
 
-require "minitest/autorun"
+require_relative 'test_helper'
 require "rrobots/numeric"
 
 class TestNumeric < Minitest::Test
